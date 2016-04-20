@@ -15,7 +15,7 @@ void CalibConfiguration::setScaleForLumi(double fbinv) {
   static const double lambda[] = {889.220391,889.220391,1201.809419,1380.303173,
 				  1693.128914,2048.36654,2761.785792,3040.950936,
 				  4109.941152,4607.435714,4607.435714,5687.691846,
-				  6522.888776,8094.368931,9903.555204,17698.14427};
+				  6522.888776,8094.368931,9903.555204,17698.14427,17698.14427};
   for (int i=0; i<NUMBER_OF_HB_LAYERS; i++) {
     scaling_for_layer[i]=exp(-fbinv/lambda[i]);
   }
@@ -66,12 +66,11 @@ void HBData::load(const char* filename, double target) {
 
   Long64_t nentries = loader.fChain->GetEntriesFast();
 
-  Long64_t nbytes = 0, nb = 0;
   m_data.reserve(nentries);
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = loader.LoadTree(jentry);
     if (ientry < 0) break;
-    nb = loader.fChain->GetEntry(jentry);
+    loader.fChain->GetEntry(jentry);
 
     HBEvent point;
     point.setEBenergy(loader.EBenergy);
@@ -136,7 +135,10 @@ HBData* theData;
 HBData::HBData() { theData=this; }
 
 void FitHB(Int_t& npar, Double_t* grad, Double_t& fn, Double_t* par, Int_t flags) {
-  fn=theData->calcQuality(par,grad);
+  if (npar!=5) {
+    fn=0;
+    printf("%d %d\n",npar,flags);
+  } else fn=theData->calcQuality(par,grad);
 }
 
 #include "TMinuit.h"

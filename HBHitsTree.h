@@ -44,7 +44,6 @@ public :
 
    HBHitsTree(TTree *tree=0);
    virtual ~HBHitsTree();
-   virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
@@ -142,11 +141,5 @@ void HBHitsTree::Show(Long64_t entry)
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t HBHitsTree::Cut(Long64_t entry)
-{
-// This function may be called from Loop.
-// returns  1 if entry is accepted.
-// returns -1 otherwise.
-   return 1;
-}
+
 #endif // #ifdef HBHitsTree_cxx
